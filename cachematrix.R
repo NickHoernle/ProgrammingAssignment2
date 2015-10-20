@@ -6,17 +6,25 @@
 ## Refer to inline comments for code explination:
 
 makeCacheMatrix <- function(x = matrix()) {
-    i <- NULL # there is no inverse yet
-    set <- function(y) {
-        x <<- y # cache the matrix x
-        i <<- NULL # for a new matrix, no inverse is cached
+    i <- NULL
+    ##Set initial matrix
+    set <- function(y) { 
+        ##cache matrix
+        x <<- y
+        ##don't calculate inverse until specifically called
+        i <<- NULL
     }
-    get <- function() x  # return the matrix
-    setInverse <- function(inverse) i <<- inverse # set the inverse, save to cache
-    getInverse <- function() i # get the inverse (will return null if not set)
-    list(set = set, get = get,
+    ##Get the original matrix
+    get <- function() x
+    ##Now cache the inverse of the matrix
+    setInverse <- function(inverse) i <<- inverse
+    ##Get the inverse of the original matrix
+    getInverse <- function() i
+    ##returns the list representation for the matrix
+    list(set = set, 
+         get = get,
          setInverse = setInverse,
-         getInverse = getInverse) #return the list representation for the matrix
+         getInverse = getInverse)
 }
 
 
@@ -29,12 +37,16 @@ makeCacheMatrix <- function(x = matrix()) {
 ## See inline comments for more:
 
 cacheSolve <- function(x, ...) {
+    ##Check to see if the 'CacheMatrix' has an inverse saved already
     i <- x$getInverse()
-    if(!is.null(i)) { # if inverse has previously been set then return that inverse from cache
-        return(i) # returned cached inverse
+    if(!is.null(i)) {
+        ##If the inverse has previously been set then return that inverse
+        return(i)
     }
-    thisMatrix <- x$get() #alternatively get original matrix
-    i <- solve(thisMatrix, ...) #determine the inverse
-    x$setInverse(i) # set the inverse of the matrix into cache (to possibly be called later)
-    i # return the inverse
+    ##Alternatively get the matrix and solve for the inverse
+    i <- solve(x$get(), ...)
+    ##Save this as the inverse into Cache
+    x$setInverse(i)
+    ##Return the inverse
+    i
 }
